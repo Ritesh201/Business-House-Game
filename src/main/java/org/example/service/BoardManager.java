@@ -6,24 +6,11 @@ import org.example.common.Utils;
 public class BoardManager {
     private final String board;
     private final PlayerManager playerManager;
-    private int bankMoney;
 
-    public int getBankMoney() {
-        return bankMoney;
-    }
-
-    public void setBankMoney(int bankMoney) {
-        this.bankMoney = bankMoney;
-    }
 
     public  BoardManager(String board, int players){
         this.board=board;
         this.playerManager=new PlayerManager(players);
-        this.bankMoney=5000;
-    }
-
-    private void printDetails(){
-        playerManager.printDetailsWithAssets();
     }
 
     private int getNewPosition(String str){
@@ -38,9 +25,9 @@ public class BoardManager {
         return diceOutput.length() == Utils.Turns * size;
     }
     public void pass(String diceOutput){
-        if(!isValid(diceOutput)){
-            return;
-        }
+//        if(!isValid(diceOutput)){
+//            return;
+//        }
         for(int i=0;i<diceOutput.length();i++){
             Player currentPlayer=playerManager.getPlayer();
             String landValue=String.valueOf(diceOutput.charAt(i));
@@ -48,28 +35,18 @@ public class BoardManager {
             takeActionOnLand(board.charAt(newPosition),newPosition);
             currentPlayer.setPosition(newPosition);
             playerManager.updateTurn();
-            printDetails();
+            System.out.println("After operation "+i+" ");
+            printDetailsWithAssets();
         }
     }
 
     private void runJailFunctionality(){
-        boolean status=playerManager.deductDueToJail();
-        if(status){
-            this.setBankMoney(this.getBankMoney()+150);
-        }
-        else{
-            System.out.println("Can not able to do that");
-        }
+        playerManager.deductDueToJail();
+
     }
 
     private void runLotteryFunctionality(){
-        if(bankMoney>=200){
-            playerManager.getBonus();
-            this.setBankMoney(this.getBankMoney()-200);
-        }
-        else{
-            System.out.println("Can not able to do that");
-        }
+        playerManager.runLotteryFunctionality();
     }
 
     private void jailAndLotteryFunctionality(Character element ){
@@ -86,14 +63,14 @@ public class BoardManager {
             jailAndLotteryFunctionality(element);
         }
         else if(element=='H'){
-            int value=playerManager.getMoneyByReachingHotel(newPosition);
-            this.setBankMoney(this.getBankMoney()+value);
+            playerManager.getMoneyByReachingHotel(newPosition);
+
         }
     }
 
     public void printDetailsWithAssets() {
         playerManager.printDetailsWithAssets();
-        System.out.println("Money in the bank "+this.getBankMoney());
+        System.out.println("Money in the bank "+playerManager.getBankMoney());
     }
 
 }

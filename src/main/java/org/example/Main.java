@@ -18,7 +18,7 @@ public class Main {
         BoardManager boardManager=new BoardManager(board,players);
 
         boardManager.pass(diceOutput);
-
+        System.out.println("Final outcome");
         boardManager.printDetailsWithAssets();
 
     }
